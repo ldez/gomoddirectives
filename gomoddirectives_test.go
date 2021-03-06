@@ -26,7 +26,7 @@ func TestAnalyze(t *testing.T) {
 	assert.Len(t, results, 2)
 }
 
-func Test_analyze(t *testing.T) {
+func TestAnalyzeFile(t *testing.T) {
 	testCases := []struct {
 		desc       string
 		modulePath string
@@ -81,6 +81,30 @@ func Test_analyze(t *testing.T) {
 			expected: 2,
 		},
 		{
+			desc:       "replace: duplicate replacement",
+			modulePath: "e/go.mod",
+			opts: Options{
+				ReplaceAllowLocal: true,
+				ReplaceAllowList: []string{
+					"github.com/gorilla/mux",
+					"github.com/ldez/grignotin",
+				},
+			},
+			expected: 2,
+		},
+		{
+			desc:       "replace: replaced by the same",
+			modulePath: "f/go.mod",
+			opts: Options{
+				ReplaceAllowLocal: true,
+				ReplaceAllowList: []string{
+					"github.com/gorilla/mux",
+					"github.com/ldez/grignotin",
+				},
+			},
+			expected: 1,
+		},
+		{
 			desc:       "retract: allow no explanation",
 			modulePath: "c/go.mod",
 			opts: Options{
@@ -125,7 +149,7 @@ func Test_analyze(t *testing.T) {
 			file, err := modfile.Parse("go.mod", raw, nil)
 			require.NoError(t, err)
 
-			results := analyze(file, test.opts)
+			results := AnalyzeFile(file, test.opts)
 
 			assert.Len(t, results, test.expected)
 		})

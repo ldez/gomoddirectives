@@ -10,10 +10,12 @@ import (
 )
 
 const (
-	reasonRetract      = "a comment is mandatory to explain why the version has been retracted"
-	reasonExclude      = "exclude directive is not allowed"
-	reasonReplaceLocal = "local replacement are not allowed"
-	reasonReplace      = "replacement are not allowed"
+	reasonRetract          = "a comment is mandatory to explain why the version has been retracted"
+	reasonExclude          = "exclude directive is not allowed"
+	reasonReplaceLocal     = "local replacement are not allowed"
+	reasonReplace          = "replacement are not allowed"
+	reasonReplaceIdentical = "the original module and the replacement are identical"
+	reasonReplaceDuplicate = "multiple replacement of the same module"
 )
 
 // Result the analysis result.
@@ -51,10 +53,11 @@ func Analyze(opts Options) ([]Result, error) {
 		return nil, fmt.Errorf("failed to get module file: %w", err)
 	}
 
-	return analyze(f, opts), nil
+	return AnalyzeFile(f, opts), nil
 }
 
-func analyze(file *modfile.File, opts Options) []Result {
+// AnalyzeFile analyzes a mod file.
+func AnalyzeFile(file *modfile.File, opts Options) []Result {
 	var results []Result
 
 	if !opts.RetractAllowNoExplanation {
@@ -73,7 +76,19 @@ func analyze(file *modfile.File, opts Options) []Result {
 		}
 	}
 
+	uniqReplace := map[string]struct{}{}
+
 	for _, r := range file.Replace {
+		if r.Old.Path == r.New.Path && r.Old.Version == r.New.Version {
+			results = append(results, NewResult(file, r.Syntax, reasonReplaceIdentical))
+		}
+
+		if _, ok := uniqReplace[r.Old.Path]; ok {
+			results = append(results, NewResult(file, r.Syntax, reasonReplaceDuplicate))
+		}
+
+		uniqReplace[r.Old.Path] = struct{}{}
+
 		reason := check(opts, r)
 		if reason == "" {
 			continue

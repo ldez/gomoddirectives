@@ -1,4 +1,4 @@
-module github.com/ldez/gomoddirectives/testdata/c
+module github.com/ldez/gomoddirectives/testdata/d
 
 go 1.16
 
