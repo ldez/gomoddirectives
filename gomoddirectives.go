@@ -79,8 +79,15 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 	uniqReplace := map[string]struct{}{}
 
 	for _, r := range file.Replace {
+		reason := check(opts, r)
+		if reason != "" {
+			results = append(results, NewResult(file, r.Syntax, reason))
+			continue
+		}
+
 		if r.Old.Path == r.New.Path && r.Old.Version == r.New.Version {
 			results = append(results, NewResult(file, r.Syntax, reasonReplaceIdentical))
+			continue
 		}
 
 		if _, ok := uniqReplace[r.Old.Path+r.Old.Version]; ok {
@@ -88,13 +95,6 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 		}
 
 		uniqReplace[r.Old.Path+r.Old.Version] = struct{}{}
-
-		reason := check(opts, r)
-		if reason == "" {
-			continue
-		}
-
-		results = append(results, NewResult(file, r.Syntax, reason))
 	}
 
 	return results
