@@ -83,11 +83,11 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 			results = append(results, NewResult(file, r.Syntax, reasonReplaceIdentical))
 		}
 
-		if _, ok := uniqReplace[r.Old.Path]; ok {
+		if _, ok := uniqReplace[r.Old.Path+r.Old.Version]; ok {
 			results = append(results, NewResult(file, r.Syntax, reasonReplaceDuplicate))
 		}
 
-		uniqReplace[r.Old.Path] = struct{}{}
+		uniqReplace[r.Old.Path+r.Old.Version] = struct{}{}
 
 		reason := check(opts, r)
 		if reason == "" {

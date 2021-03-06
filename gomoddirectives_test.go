@@ -105,6 +105,18 @@ func TestAnalyzeFile(t *testing.T) {
 			expected: 1,
 		},
 		{
+			desc:       "replace: duplicate replacement but for the different versions",
+			modulePath: "g/go.mod",
+			opts: Options{
+				ReplaceAllowLocal: true,
+				ReplaceAllowList: []string{
+					"github.com/gorilla/mux",
+					"github.com/ldez/grignotin",
+				},
+			},
+			expected: 0,
+		},
+		{
 			desc:       "retract: allow no explanation",
 			modulePath: "c/go.mod",
 			opts: Options{
