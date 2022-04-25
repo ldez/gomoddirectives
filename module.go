@@ -1,6 +1,7 @@
 package gomoddirectives
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -29,7 +30,7 @@ func GetModuleFile() (*modfile.File, error) {
 	}
 
 	var v modInfo
-	err = json.Unmarshal(raw, &v)
+	err = json.NewDecoder(bytes.NewBuffer(raw)).Decode(&v)
 	if err != nil {
 		return nil, fmt.Errorf("unmarshaling error: %w: %s", err, string(raw))
 	}
