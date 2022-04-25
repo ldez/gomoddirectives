@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"os/exec"
 
 	"golang.org/x/mod/modfile"
@@ -39,7 +39,7 @@ func GetModuleFile() (*modfile.File, error) {
 		return nil, errors.New("working directory is not part of a module")
 	}
 
-	raw, err = ioutil.ReadFile(v.GoMod)
+	raw, err = os.ReadFile(v.GoMod)
 	if err != nil {
 		return nil, fmt.Errorf("reading go.mod file: %w", err)
 	}
