@@ -55,6 +55,10 @@ linters:
     - interfacer # deprecated
     - golint # deprecated
     - scopelint # deprecated
+    - nosnakecase # deprecated
+    - structcheck # deprecated
+    - exhaustivestruct # deprecated
+    - ifshort # deprecated
     - sqlclosecheck # not relevant (SQL)
     - rowserrcheck # not relevant (SQL)
     - cyclop # duplicate of gocyclo
@@ -71,7 +75,7 @@ linters:
     - goerr113
     - wrapcheck
     - exhaustive
-    - exhaustivestruct
+    - exhaustruct
     - varnamelen
 
 issues:
