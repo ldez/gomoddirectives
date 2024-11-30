@@ -6,6 +6,7 @@ import (
 	"go/token"
 	"strings"
 
+	"github.com/ldez/grignotin/gomod"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/analysis"
 )
@@ -49,7 +50,7 @@ type Options struct {
 
 // AnalyzePass analyzes a pass.
 func AnalyzePass(pass *analysis.Pass, opts Options) ([]Result, error) {
-	info, err := getModuleInfo()
+	info, err := gomod.GetModuleInfo()
 	if err != nil {
 		return nil, fmt.Errorf("get information about modules: %w", err)
 	}
