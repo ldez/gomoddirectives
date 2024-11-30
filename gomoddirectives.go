@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"golang.org/x/mod/modfile"
+	"golang.org/x/tools/go/analysis"
 )
 
 const (
@@ -44,6 +45,16 @@ type Options struct {
 	ReplaceAllowLocal         bool
 	ExcludeForbidden          bool
 	RetractAllowNoExplanation bool
+}
+
+// AnalyzePass analyzes a pass.
+func AnalyzePass(pass *analysis.Pass, opts Options) ([]Result, error) {
+	f, err := GetGoModFile(pass)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read module file: %w", err)
+	}
+
+	return AnalyzeFile(f, opts), nil
 }
 
 // Analyze analyzes a project.
