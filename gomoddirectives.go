@@ -49,9 +49,24 @@ type Options struct {
 
 // AnalyzePass analyzes a pass.
 func AnalyzePass(pass *analysis.Pass, opts Options) ([]Result, error) {
-	f, err := GetGoModFile(pass)
+	info, err := getModuleInfo()
 	if err != nil {
-		return nil, fmt.Errorf("failed to read module file: %w", err)
+		return nil, fmt.Errorf("get information about modules: %w", err)
+	}
+
+	goMod := info[0].GoMod
+	if pass.Module != nil && pass.Module.Path != "" {
+		for _, m := range info {
+			if m.Path == pass.Module.Path {
+				goMod = m.GoMod
+				break
+			}
+		}
+	}
+
+	f, err := parseGoMod(goMod)
+	if err != nil {
+		return nil, fmt.Errorf("parse %s: %w", goMod, err)
 	}
 
 	return AnalyzeFile(f, opts), nil

@@ -13,3 +13,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+retract (
+	v0.4.0 // invalid implementation of AnalyzePass
+	v0.3.0 // invalid functions
+)

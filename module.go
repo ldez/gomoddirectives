@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 
 	"golang.org/x/mod/modfile"
-	"golang.org/x/tools/go/analysis"
 )
 
 type modInfo struct {
@@ -24,7 +23,7 @@ type modInfo struct {
 // GetModuleFile gets module file.
 // It's better to use [GetGoModFile] instead of this function.
 func GetModuleFile() (*modfile.File, error) {
-	goMod, err := getModulePath()
+	goMod, err := getFirstModulePath()
 	if err != nil {
 		return nil, err
 	}
@@ -36,16 +35,7 @@ func GetModuleFile() (*modfile.File, error) {
 	return parseGoMod(goMod)
 }
 
-// GetGoModFile gets module file.
-func GetGoModFile(pass *analysis.Pass) (*modfile.File, error) {
-	if pass.Module != nil && pass.Module.Path != "" {
-		return parseGoMod(pass.Module.Path)
-	}
-
-	return GetModuleFile()
-}
-
-func getModulePath() (string, error) {
+func getFirstModulePath() (string, error) {
 	// https://github.com/golang/go/issues/44753#issuecomment-790089020
 	cmd := exec.Command("go", "list", "-m", "-json")
 
@@ -70,4 +60,39 @@ func parseGoMod(goMod string) (*modfile.File, error) {
 	}
 
 	return modfile.Parse("go.mod", raw, nil)
+}
+
+func getModuleInfo() ([]modInfo, error) {
+	// https://github.com/golang/go/issues/44753#issuecomment-790089020
+	cmd := exec.Command("go", "list", "-m", "-json")
+
+	out, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("command go list: %w: %s", err, string(out))
+	}
+
+	var infos []modInfo
+
+	for dec := json.NewDecoder(bytes.NewBuffer(out)); dec.More(); {
+		var v modInfo
+		if err := dec.Decode(&v); err != nil {
+			return nil, fmt.Errorf("unmarshaling error: %w: %s", err, string(out))
+		}
+
+		if v.GoMod == "" {
+			return nil, errors.New("working directory is not part of a module")
+		}
+
+		if !v.Main || v.Dir == "" {
+			continue
+		}
+
+		infos = append(infos, v)
+	}
+
+	if len(infos) == 0 {
+		return nil, errors.New("go.mod file not found")
+	}
+
+	return infos, nil
 }
