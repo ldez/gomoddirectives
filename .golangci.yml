@@ -1,5 +1,25 @@
-run:
-  timeout: 2m
+linters:
+  enable-all: true
+  disable:
+    - exportloopref # deprecated
+    - sqlclosecheck # not relevant (SQL)
+    - rowserrcheck # not relevant (SQL)
+    - cyclop # duplicate of gocyclo
+    - lll
+    - dupl
+    - prealloc
+    - bodyclose
+    - wsl
+    - nlreturn
+    - mnd
+    - testpackage
+    - paralleltest
+    - tparallel
+    - err113
+    - wrapcheck
+    - exhaustive
+    - exhaustruct
+    - varnamelen
 
 linters-settings:
   govet:
@@ -49,39 +69,6 @@ linters-settings:
       rules:
         json: pascal
 
-linters:
-  enable-all: true
-  disable:
-    - deadcode # deprecated
-    - exhaustivestruct # deprecated
-    - golint # deprecated
-    - ifshort # deprecated
-    - interfacer # deprecated
-    - maligned # deprecated
-    - nosnakecase # deprecated
-    - scopelint # deprecated
-    - structcheck # deprecated
-    - varcheck # deprecated
-    - sqlclosecheck # not relevant (SQL)
-    - rowserrcheck # not relevant (SQL)
-    - execinquery # not relevant (SQL)
-    - cyclop # duplicate of gocyclo
-    - lll
-    - dupl
-    - prealloc
-    - bodyclose
-    - wsl
-    - nlreturn
-    - gomnd
-    - testpackage
-    - paralleltest
-    - tparallel
-    - goerr113
-    - wrapcheck
-    - exhaustive
-    - exhaustruct
-    - varnamelen
-
 issues:
   exclude-use-default: false
   max-issues-per-linter: 0
@@ -100,3 +87,9 @@ issues:
 output:
   show-stats: true
   sort-results: true
+  sort-order:
+    - linter
+    - file
+
+run:
+  timeout: 2m

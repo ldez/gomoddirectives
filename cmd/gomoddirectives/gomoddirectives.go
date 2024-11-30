@@ -10,6 +10,7 @@ import (
 	"github.com/ldez/gomoddirectives"
 )
 
+//nolint:recvcheck // required for the marshaling.
 type flagSlice []string
 
 func (f flagSlice) String() string {
