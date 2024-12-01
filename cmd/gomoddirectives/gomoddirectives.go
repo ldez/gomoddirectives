@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/ldez/gomoddirectives"
@@ -30,6 +31,7 @@ type config struct {
 	ToolchainForbidden        bool
 	ToolForbidden             bool
 	GoDebugForbidden          bool
+	GoVersionPattern          string
 }
 
 func main() {
@@ -42,6 +44,7 @@ func main() {
 	flag.BoolVar(&cfg.ToolchainForbidden, "toolchain", false, "Forbid the use of toolchain directive")
 	flag.BoolVar(&cfg.ToolForbidden, "tool", false, "Forbid the use of tool directives")
 	flag.BoolVar(&cfg.GoDebugForbidden, "godebug", false, "Forbid the use of godebug directives")
+	flag.StringVar(&cfg.GoVersionPattern, "goversion", "", "Pattern to validate go min version directive")
 
 	help := flag.Bool("h", false, "Show this help.")
 
@@ -52,7 +55,7 @@ func main() {
 		usage()
 	}
 
-	results, err := gomoddirectives.Analyze(gomoddirectives.Options{
+	opts := gomoddirectives.Options{
 		ReplaceAllowList:          cfg.ReplaceAllowList,
 		ReplaceAllowLocal:         cfg.ReplaceAllowLocal,
 		ExcludeForbidden:          cfg.ExcludeForbidden,
@@ -60,7 +63,17 @@ func main() {
 		ToolchainForbidden:        cfg.ToolchainForbidden,
 		ToolForbidden:             cfg.ToolForbidden,
 		GoDebugForbidden:          cfg.GoDebugForbidden,
-	})
+	}
+
+	if cfg.GoVersionPattern != "" {
+		var err error
+		opts.GoVersionPattern, err = regexp.Compile(cfg.GoVersionPattern)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	results, err := gomoddirectives.Analyze(opts)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -5,6 +5,7 @@ import (
 	"go/token"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"testing"
 
@@ -299,6 +300,32 @@ func TestAnalyzeFile(t *testing.T) {
 			opts: Options{
 				GoDebugForbidden: false,
 			},
+		},
+		{
+			desc:       "goversion: don't check",
+			modulePath: "goversion_family/go.mod",
+			opts: Options{
+				GoVersionPattern: nil,
+			},
+		},
+		{
+			desc:       "goversion: pattern match",
+			modulePath: "goversion_family/go.mod",
+			opts: Options{
+				GoVersionPattern: regexp.MustCompile(`\d\.\d+(\.0)?`),
+			},
+		},
+		{
+			desc:       "goversion: pattern not matched",
+			modulePath: "goversion_family/go.mod",
+			opts: Options{
+				GoVersionPattern: regexp.MustCompile(`\d\.\d+\.0`),
+			},
+			expected: []Result{{
+				Reason: "go directive (1.22) doesn't match the pattern '\\d\\.\\d+\\.0'",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 3, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 3, Column: 8},
+			}},
 		},
 	}
 

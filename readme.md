@@ -77,7 +77,7 @@ tool (
 )
 ```
 
-## [`toolchain`](https://golang.org/ref/mod#go-mod-file-toolchain) directives
+## [`toolchain`](https://golang.org/ref/mod#go-mod-file-toolchain) directive
 
 - Ban `toolchain` directive.
 
@@ -103,4 +103,14 @@ godebug (
     panicnil=1
     asynctimerchan=0
 )
+```
+
+## [`go`](https://go.dev/ref/mod#go-mod-file-go) directive
+
+- Use a regular expression to constraint the Go minimum version.
+
+```go
+module example.com/foo
+
+go 1.22.0
 ```

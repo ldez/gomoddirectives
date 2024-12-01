@@ -4,6 +4,7 @@ package gomoddirectives
 import (
 	"fmt"
 	"go/token"
+	"regexp"
 	"strings"
 
 	"github.com/ldez/grignotin/gomod"
@@ -17,6 +18,7 @@ const (
 	reasonToolchain        = "toolchain directive is not allowed"
 	reasonTool             = "tool directive is not allowed"
 	reasonGoDebug          = "godebug directive is not allowed"
+	reasonGoVersion        = "go directive (%s) doesn't match the pattern '%s'"
 	reasonReplaceLocal     = "local replacement are not allowed"
 	reasonReplace          = "replacement are not allowed"
 	reasonReplaceIdentical = "the original module and the replacement are identical"
@@ -52,6 +54,7 @@ type Options struct {
 	ToolchainForbidden        bool
 	ToolForbidden             bool
 	GoDebugForbidden          bool
+	GoVersionPattern          *regexp.Regexp
 }
 
 // AnalyzePass analyzes a pass.
@@ -98,11 +101,22 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 		checkReplaceDirectives,
 		checkToolchainDirective,
 		checkGoDebugDirectives,
+		checkGoVersionDirectives,
 	}
 
 	var results []Result
 	for _, check := range checks {
 		results = append(results, check(file, opts)...)
+	}
+
+	return results
+}
+
+func checkGoVersionDirectives(file *modfile.File, opts Options) []Result {
+	var results []Result
+
+	if file.Go != nil && opts.GoVersionPattern != nil && !opts.GoVersionPattern.MatchString(file.Go.Version) {
+		results = append(results, NewResult(file, file.Go.Syntax, fmt.Sprintf(reasonGoVersion, file.Go.Version, opts.GoVersionPattern.String())))
 	}
 
 	return results
