@@ -27,6 +27,7 @@ type config struct {
 	ReplaceAllowLocal         bool
 	ExcludeForbidden          bool
 	RetractAllowNoExplanation bool
+	ToolForbidden             bool
 }
 
 func main() {
@@ -36,6 +37,7 @@ func main() {
 	flag.Var(&cfg.ReplaceAllowList, "list", "List of allowed replace directives")
 	flag.BoolVar(&cfg.RetractAllowNoExplanation, "retract-no-explanation", false, "Allow to use retract directives without explanation")
 	flag.BoolVar(&cfg.ExcludeForbidden, "exclude", false, "Forbid the use of exclude directives")
+	flag.BoolVar(&cfg.ToolForbidden, "tool", false, "Forbid the use of tool directives")
 
 	help := flag.Bool("h", false, "Show this help.")
 
@@ -50,6 +52,7 @@ func main() {
 		ReplaceAllowList:          cfg.ReplaceAllowList,
 		ReplaceAllowLocal:         cfg.ReplaceAllowLocal,
 		ExcludeForbidden:          cfg.ExcludeForbidden,
+		ToolForbidden:             cfg.ToolForbidden,
 		RetractAllowNoExplanation: cfg.RetractAllowNoExplanation,
 	})
 	if err != nil {

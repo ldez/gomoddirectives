@@ -148,6 +148,30 @@ func TestAnalyzeFile(t *testing.T) {
 			},
 			expected: 0,
 		},
+		{
+			desc:       "tool: don't allow",
+			modulePath: "tool/go.mod",
+			opts: Options{
+				ToolForbidden: true,
+			},
+			expected: 1,
+		},
+		{
+			desc:       "tool: don't allow (multiple)",
+			modulePath: "tool_multiple/go.mod",
+			opts: Options{
+				ToolForbidden: true,
+			},
+			expected: 3,
+		},
+		{
+			desc:       "tool: allow",
+			modulePath: "tool/go.mod",
+			opts: Options{
+				ToolForbidden: false,
+			},
+			expected: 0,
+		},
 	}
 
 	for _, test := range testCases {

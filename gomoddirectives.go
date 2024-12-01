@@ -14,6 +14,7 @@ import (
 const (
 	reasonRetract          = "a comment is mandatory to explain why the version has been retracted"
 	reasonExclude          = "exclude directive is not allowed"
+	reasonTool             = "tool directive is not allowed"
 	reasonReplaceLocal     = "local replacement are not allowed"
 	reasonReplace          = "replacement are not allowed"
 	reasonReplaceIdentical = "the original module and the replacement are identical"
@@ -45,6 +46,7 @@ type Options struct {
 	ReplaceAllowList          []string
 	ReplaceAllowLocal         bool
 	ExcludeForbidden          bool
+	ToolForbidden             bool
 	RetractAllowNoExplanation bool
 }
 
@@ -100,6 +102,12 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 	if opts.ExcludeForbidden {
 		for _, e := range file.Exclude {
 			results = append(results, NewResult(file, e.Syntax, reasonExclude))
+		}
+	}
+
+	if opts.ToolForbidden {
+		for _, e := range file.Tool {
+			results = append(results, NewResult(file, e.Syntax, reasonTool))
 		}
 	}
 
