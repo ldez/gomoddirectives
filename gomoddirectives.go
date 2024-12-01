@@ -87,6 +87,15 @@ func Analyze(opts Options) ([]Result, error) {
 
 // AnalyzeFile analyzes a mod file.
 func AnalyzeFile(file *modfile.File, opts Options) []Result {
+	results := checkRetractDirectives(file, opts)
+	results = append(results, checkExcludeDirectives(file, opts)...)
+	results = append(results, checkToolDirectives(file, opts)...)
+	results = append(results, checkReplaceDirectives(file, opts)...)
+
+	return results
+}
+
+func checkRetractDirectives(file *modfile.File, opts Options) []Result {
 	var results []Result
 
 	if !opts.RetractAllowNoExplanation {
@@ -99,11 +108,23 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 		}
 	}
 
+	return results
+}
+
+func checkExcludeDirectives(file *modfile.File, opts Options) []Result {
+	var results []Result
+
 	if opts.ExcludeForbidden {
 		for _, e := range file.Exclude {
 			results = append(results, NewResult(file, e.Syntax, reasonExclude))
 		}
 	}
+
+	return results
+}
+
+func checkToolDirectives(file *modfile.File, opts Options) []Result {
+	var results []Result
 
 	if opts.ToolForbidden {
 		for _, e := range file.Tool {
@@ -111,10 +132,16 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 		}
 	}
 
+	return results
+}
+
+func checkReplaceDirectives(file *modfile.File, opts Options) []Result {
+	var results []Result
+
 	uniqReplace := map[string]struct{}{}
 
 	for _, r := range file.Replace {
-		reason := check(opts, r)
+		reason := checkReplaceDirective(opts, r)
 		if reason != "" {
 			results = append(results, NewResult(file, r.Syntax, reason))
 			continue
@@ -135,7 +162,7 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 	return results
 }
 
-func check(o Options, r *modfile.Replace) string {
+func checkReplaceDirective(o Options, r *modfile.Replace) string {
 	if isLocal(r) {
 		if o.ReplaceAllowLocal {
 			return ""
