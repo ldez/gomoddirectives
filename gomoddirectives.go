@@ -91,12 +91,19 @@ func Analyze(opts Options) ([]Result, error) {
 
 // AnalyzeFile analyzes a mod file.
 func AnalyzeFile(file *modfile.File, opts Options) []Result {
-	results := checkRetractDirectives(file, opts)
-	results = append(results, checkExcludeDirectives(file, opts)...)
-	results = append(results, checkToolDirectives(file, opts)...)
-	results = append(results, checkReplaceDirectives(file, opts)...)
-	results = append(results, checkToolchainDirective(file, opts)...)
-	results = append(results, checkGoDebugDirectives(file, opts)...)
+	checks := []func(file *modfile.File, opts Options) []Result{
+		checkRetractDirectives,
+		checkExcludeDirectives,
+		checkToolDirectives,
+		checkReplaceDirectives,
+		checkToolchainDirective,
+		checkGoDebugDirectives,
+	}
+
+	var results []Result
+	for _, check := range checks {
+		results = append(results, check(file, opts)...)
+	}
 
 	return results
 }
