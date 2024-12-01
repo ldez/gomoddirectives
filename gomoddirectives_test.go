@@ -17,7 +17,7 @@ func TestAnalyze(t *testing.T) {
 		_ = os.Chdir(wd)
 	}()
 
-	err = os.Chdir("./testdata/a/")
+	err = os.Chdir("./testdata/replace/")
 	require.NoError(t, err)
 
 	results, err := Analyze(Options{})
@@ -35,13 +35,13 @@ func TestAnalyzeFile(t *testing.T) {
 	}{
 		{
 			desc:       "replace: allow nothing",
-			modulePath: "a/go.mod",
+			modulePath: "replace/go.mod",
 			opts:       Options{},
 			expected:   2,
 		},
 		{
-			desc:       "replace: allow a replace",
-			modulePath: "a/go.mod",
+			desc:       "replace: allow an element",
+			modulePath: "replace/go.mod",
 			opts: Options{
 				ReplaceAllowList: []string{
 					"github.com/gorilla/mux",
@@ -51,7 +51,7 @@ func TestAnalyzeFile(t *testing.T) {
 		},
 		{
 			desc:       "replace: allow local",
-			modulePath: "a/go.mod",
+			modulePath: "replace/go.mod",
 			opts: Options{
 				ReplaceAllowLocal: true,
 			},
@@ -59,7 +59,7 @@ func TestAnalyzeFile(t *testing.T) {
 		},
 		{
 			desc:       "replace: exclude all",
-			modulePath: "a/go.mod",
+			modulePath: "replace/go.mod",
 			opts: Options{
 				ReplaceAllowLocal: true,
 				ReplaceAllowList: []string{
@@ -71,7 +71,7 @@ func TestAnalyzeFile(t *testing.T) {
 		},
 		{
 			desc:       "replace: allow list doesn't override allow local",
-			modulePath: "a/go.mod",
+			modulePath: "replace/go.mod",
 			opts: Options{
 				ReplaceAllowLocal: false,
 				ReplaceAllowList: []string{
@@ -82,7 +82,7 @@ func TestAnalyzeFile(t *testing.T) {
 		},
 		{
 			desc:       "replace: duplicate replacement",
-			modulePath: "e/go.mod",
+			modulePath: "replace_duplicate/go.mod",
 			opts: Options{
 				ReplaceAllowLocal: true,
 				ReplaceAllowList: []string{
@@ -93,8 +93,8 @@ func TestAnalyzeFile(t *testing.T) {
 			expected: 2,
 		},
 		{
-			desc:       "replace: replaced by the same",
-			modulePath: "f/go.mod",
+			desc:       "replace: replaced with identical element",
+			modulePath: "replace_identical/go.mod",
 			opts: Options{
 				ReplaceAllowLocal: true,
 				ReplaceAllowList: []string{
@@ -106,7 +106,7 @@ func TestAnalyzeFile(t *testing.T) {
 		},
 		{
 			desc:       "replace: duplicate replacement but for the different versions",
-			modulePath: "g/go.mod",
+			modulePath: "replace_duplicate_versions/go.mod",
 			opts: Options{
 				ReplaceAllowLocal: true,
 				ReplaceAllowList: []string{
@@ -118,7 +118,7 @@ func TestAnalyzeFile(t *testing.T) {
 		},
 		{
 			desc:       "retract: allow no explanation",
-			modulePath: "c/go.mod",
+			modulePath: "retract/go.mod",
 			opts: Options{
 				RetractAllowNoExplanation: true,
 			},
@@ -126,7 +126,7 @@ func TestAnalyzeFile(t *testing.T) {
 		},
 		{
 			desc:       "retract: explanation is require",
-			modulePath: "c/go.mod",
+			modulePath: "retract/go.mod",
 			opts: Options{
 				RetractAllowNoExplanation: false,
 			},
@@ -134,7 +134,7 @@ func TestAnalyzeFile(t *testing.T) {
 		},
 		{
 			desc:       "exclude: don't allow",
-			modulePath: "d/go.mod",
+			modulePath: "exclude/go.mod",
 			opts: Options{
 				ExcludeForbidden: true,
 			},
@@ -142,7 +142,7 @@ func TestAnalyzeFile(t *testing.T) {
 		},
 		{
 			desc:       "exclude: allow",
-			modulePath: "d/go.mod",
+			modulePath: "exclude/go.mod",
 			opts: Options{
 				ExcludeForbidden: false,
 			},

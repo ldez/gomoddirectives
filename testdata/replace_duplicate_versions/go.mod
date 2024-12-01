@@ -1,4 +1,4 @@
-module github.com/ldez/gomoddirectives/testdata/g
+module github.com/ldez/gomoddirectives/testdata/replace_duplicate_versions
 
 go 1.16
 

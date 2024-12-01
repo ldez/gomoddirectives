@@ -15,13 +15,13 @@ func TestGetModuleFile(t *testing.T) {
 		_ = os.Chdir(wd)
 	}()
 
-	err = os.Chdir("./testdata/a/")
+	err = os.Chdir("./testdata/replace/")
 	require.NoError(t, err)
 
 	file, err := GetModuleFile()
 	require.NoError(t, err)
 
-	assert.Equal(t, "github.com/ldez/gomoddirectives/testdata/a", file.Module.Mod.Path)
+	assert.Equal(t, "github.com/ldez/gomoddirectives/testdata/replace", file.Module.Mod.Path)
 }
 
 func TestGetModuleFile_here(t *testing.T) {

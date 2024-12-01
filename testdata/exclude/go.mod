@@ -1,4 +1,4 @@
-module github.com/ldez/gomoddirectives/testdata/d
+module github.com/ldez/gomoddirectives/testdata/exclude
 
 go 1.16
 

@@ -1,4 +1,4 @@
-module github.com/ldez/gomoddirectives/testdata/f
+module github.com/ldez/gomoddirectives/testdata/replace_identical
 
 go 1.16
 
