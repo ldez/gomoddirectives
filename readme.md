@@ -5,16 +5,90 @@
 
 A linter that handle [`replace`](https://golang.org/ref/mod#go-mod-file-replace),
 [`tool`](https://golang.org/ref/mod#go-mod-file-tool),
+[`toolchain`](https://golang.org/ref/mod#go-mod-file-toolchain),
 [`retract`](https://golang.org/ref/mod#go-mod-file-retract),
 [`exclude`](https://golang.org/ref/mod#go-mod-file-exclude) directives into `go.mod`.
 
-Features:
+## [`retract`](https://golang.org/ref/mod#go-mod-file-retract) directives
 
-- ban all [`replace`](https://golang.org/ref/mod#go-mod-file-replace) directives
-- allow only local [`replace`](https://golang.org/ref/mod#go-mod-file-replace) directives
-- allow only some [`replace`](https://golang.org/ref/mod#go-mod-file-replace) directives
-- detect duplicated [`replace`](https://golang.org/ref/mod#go-mod-file-replace) directives
-- detect identical [`replace`](https://golang.org/ref/mod#go-mod-file-replace) directives
-- force explanation for [`retract`](https://golang.org/ref/mod#go-mod-file-retract) directives
-- ban all [`exclude`](https://golang.org/ref/mod#go-mod-file-exclude) directives
-- ban all [`tool`](https://golang.org/ref/mod#go-mod-file-tool) directives
+- Force explanation for `retract` directives.
+
+```go
+module example.com/foo
+
+go 1.22
+
+require (
+	github.com/ldez/grignotin v0.4.1
+)
+
+retract (
+    v1.0.0 // Explanation
+)
+```
+
+## [`replace`](https://golang.org/ref/mod#go-mod-file-replace) directives
+
+- Ban all `replace` directives.
+- Allow only local `replace` directives.
+- Allow only some `replace` directives.
+- Detect duplicated `replace` directives.
+- Detect identical `replace` directives.
+
+```go
+module example.com/foo
+
+go 1.22
+
+require (
+	github.com/ldez/grignotin v0.4.1
+)
+
+replace github.com/ldez/grignotin => ../grignotin/
+```
+
+## [`exclude`](https://golang.org/ref/mod#go-mod-file-exclude) directives
+
+- Ban all `exclude` directives.
+
+```go
+module example.com/foo
+
+go 1.22
+
+require (
+	github.com/ldez/grignotin v0.4.1
+)
+
+exclude (
+    golang.org/x/crypto v1.4.5
+    golang.org/x/text v1.6.7
+)
+```
+
+## [`tool`](https://golang.org/ref/mod#go-mod-file-tool) directives
+
+- Ban all `tool` directives.
+
+```go
+module example.com/foo
+
+go 1.24
+
+tool (
+    example.com/module/cmd/a
+    example.com/module/cmd/b
+)
+```
+
+## [`toolchain`](https://golang.org/ref/mod#go-mod-file-toolchain) directives
+
+- Ban `toolchain` directive.
+
+```go
+module example.com/foo
+
+go 1.22
+
+toolchain go1.23.3
+```
