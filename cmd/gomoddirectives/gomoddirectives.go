@@ -27,16 +27,18 @@ type config struct {
 	ReplaceAllowLocal         bool
 	ExcludeForbidden          bool
 	RetractAllowNoExplanation bool
+	ToolchainForbidden        bool
 	ToolForbidden             bool
 }
 
 func main() {
 	cfg := config{}
 
-	flag.BoolVar(&cfg.ReplaceAllowLocal, "local", false, "Allow local replace directives")
-	flag.Var(&cfg.ReplaceAllowList, "list", "List of allowed replace directives")
-	flag.BoolVar(&cfg.RetractAllowNoExplanation, "retract-no-explanation", false, "Allow to use retract directives without explanation")
 	flag.BoolVar(&cfg.ExcludeForbidden, "exclude", false, "Forbid the use of exclude directives")
+	flag.Var(&cfg.ReplaceAllowList, "list", "List of allowed replace directives")
+	flag.BoolVar(&cfg.ReplaceAllowLocal, "local", false, "Allow local replace directives")
+	flag.BoolVar(&cfg.RetractAllowNoExplanation, "retract-no-explanation", false, "Allow to use retract directives without explanation")
+	flag.BoolVar(&cfg.ToolchainForbidden, "toolchain", false, "Forbid the use of toolchain directive")
 	flag.BoolVar(&cfg.ToolForbidden, "tool", false, "Forbid the use of tool directives")
 
 	help := flag.Bool("h", false, "Show this help.")
@@ -49,11 +51,12 @@ func main() {
 	}
 
 	results, err := gomoddirectives.Analyze(gomoddirectives.Options{
+		ExcludeForbidden:          cfg.ExcludeForbidden,
 		ReplaceAllowList:          cfg.ReplaceAllowList,
 		ReplaceAllowLocal:         cfg.ReplaceAllowLocal,
-		ExcludeForbidden:          cfg.ExcludeForbidden,
-		ToolForbidden:             cfg.ToolForbidden,
 		RetractAllowNoExplanation: cfg.RetractAllowNoExplanation,
+		ToolchainForbidden:        cfg.ToolchainForbidden,
+		ToolForbidden:             cfg.ToolForbidden,
 	})
 	if err != nil {
 		log.Fatal(err)

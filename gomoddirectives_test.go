@@ -172,6 +172,22 @@ func TestAnalyzeFile(t *testing.T) {
 			},
 			expected: 0,
 		},
+		{
+			desc:       "toolchain: don't allow",
+			modulePath: "toolchain/go.mod",
+			opts: Options{
+				ToolchainForbidden: true,
+			},
+			expected: 1,
+		},
+		{
+			desc:       "toolchain: allow",
+			modulePath: "toolchain/go.mod",
+			opts: Options{
+				ToolchainForbidden: false,
+			},
+			expected: 0,
+		},
 	}
 
 	for _, test := range testCases {

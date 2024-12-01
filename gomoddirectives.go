@@ -14,6 +14,7 @@ import (
 const (
 	reasonRetract          = "a comment is mandatory to explain why the version has been retracted"
 	reasonExclude          = "exclude directive is not allowed"
+	reasonToolchain        = "toolchain directive is not allowed"
 	reasonTool             = "tool directive is not allowed"
 	reasonReplaceLocal     = "local replacement are not allowed"
 	reasonReplace          = "replacement are not allowed"
@@ -46,8 +47,9 @@ type Options struct {
 	ReplaceAllowList          []string
 	ReplaceAllowLocal         bool
 	ExcludeForbidden          bool
-	ToolForbidden             bool
 	RetractAllowNoExplanation bool
+	ToolchainForbidden        bool
+	ToolForbidden             bool
 }
 
 // AnalyzePass analyzes a pass.
@@ -91,6 +93,7 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 	results = append(results, checkExcludeDirectives(file, opts)...)
 	results = append(results, checkToolDirectives(file, opts)...)
 	results = append(results, checkReplaceDirectives(file, opts)...)
+	results = append(results, checkToolchainDirective(file, opts)...)
 
 	return results
 }
@@ -178,6 +181,16 @@ func checkReplaceDirective(o Options, r *modfile.Replace) string {
 	}
 
 	return fmt.Sprintf("%s: %s", reasonReplace, r.Old.Path)
+}
+
+func checkToolchainDirective(file *modfile.File, opts Options) []Result {
+	var results []Result
+
+	if opts.ToolchainForbidden && file.Toolchain != nil {
+		results = append(results, NewResult(file, file.Toolchain.Syntax, reasonToolchain))
+	}
+
+	return results
 }
 
 // Filesystem paths found in "replace" directives are represented by a path with an empty version.
