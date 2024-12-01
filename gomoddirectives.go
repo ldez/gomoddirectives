@@ -16,6 +16,7 @@ const (
 	reasonExclude          = "exclude directive is not allowed"
 	reasonToolchain        = "toolchain directive is not allowed"
 	reasonTool             = "tool directive is not allowed"
+	reasonGoDebug          = "godebug directive is not allowed"
 	reasonReplaceLocal     = "local replacement are not allowed"
 	reasonReplace          = "replacement are not allowed"
 	reasonReplaceIdentical = "the original module and the replacement are identical"
@@ -50,6 +51,7 @@ type Options struct {
 	RetractAllowNoExplanation bool
 	ToolchainForbidden        bool
 	ToolForbidden             bool
+	GoDebugForbidden          bool
 }
 
 // AnalyzePass analyzes a pass.
@@ -94,6 +96,7 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 	results = append(results, checkToolDirectives(file, opts)...)
 	results = append(results, checkReplaceDirectives(file, opts)...)
 	results = append(results, checkToolchainDirective(file, opts)...)
+	results = append(results, checkGoDebugDirectives(file, opts)...)
 
 	return results
 }
@@ -188,6 +191,18 @@ func checkToolchainDirective(file *modfile.File, opts Options) []Result {
 
 	if opts.ToolchainForbidden && file.Toolchain != nil {
 		results = append(results, NewResult(file, file.Toolchain.Syntax, reasonToolchain))
+	}
+
+	return results
+}
+
+func checkGoDebugDirectives(file *modfile.File, opts Options) []Result {
+	var results []Result
+
+	if opts.GoDebugForbidden {
+		for _, e := range file.Godebug {
+			results = append(results, NewResult(file, e.Syntax, reasonGoDebug))
+		}
 	}
 
 	return results

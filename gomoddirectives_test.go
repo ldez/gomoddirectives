@@ -269,6 +269,37 @@ func TestAnalyzeFile(t *testing.T) {
 				ToolchainForbidden: false,
 			},
 		},
+		{
+			desc:       "godebug: don't allow",
+			modulePath: "godebug/go.mod",
+			opts: Options{
+				GoDebugForbidden: true,
+			},
+			expected: []Result{
+				{
+					Reason: "godebug directive is not allowed",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 5, Column: 1},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 5, Column: 23},
+				},
+				{
+					Reason: "godebug directive is not allowed",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 7, Column: 5},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 7, Column: 15},
+				},
+				{
+					Reason: "godebug directive is not allowed",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 8, Column: 5},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 8, Column: 21},
+				},
+			},
+		},
+		{
+			desc:       "godebug: allow",
+			modulePath: "godebug/go.mod",
+			opts: Options{
+				GoDebugForbidden: false,
+			},
+		},
 	}
 
 	for _, test := range testCases {

@@ -3,11 +3,7 @@
 [![Sponsor](https://img.shields.io/badge/Sponsor%20me-%E2%9D%A4%EF%B8%8F-pink)](https://github.com/sponsors/ldez)
 [![Build Status](https://github.com/ldez/gomoddirectives/workflows/Main/badge.svg?branch=master)](https://github.com/ldez/gomoddirectives/actions)
 
-A linter that handle [`replace`](https://golang.org/ref/mod#go-mod-file-replace),
-[`tool`](https://golang.org/ref/mod#go-mod-file-tool),
-[`toolchain`](https://golang.org/ref/mod#go-mod-file-toolchain),
-[`retract`](https://golang.org/ref/mod#go-mod-file-retract),
-[`exclude`](https://golang.org/ref/mod#go-mod-file-exclude) directives into `go.mod`.
+A linter that handle directives into `go.mod`.
 
 ## [`retract`](https://golang.org/ref/mod#go-mod-file-retract) directives
 
@@ -91,4 +87,20 @@ module example.com/foo
 go 1.22
 
 toolchain go1.23.3
+```
+
+## [`godebug`](https://go.dev/ref/mod#go-mod-file-godebug) directives
+
+- Ban `godebug` directive.
+
+```go
+module example.com/foo
+
+go 1.22
+
+godebug default=go1.21
+godebug (
+    panicnil=1
+    asynctimerchan=0
+)
 ```

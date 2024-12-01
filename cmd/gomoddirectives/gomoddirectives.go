@@ -29,6 +29,7 @@ type config struct {
 	RetractAllowNoExplanation bool
 	ToolchainForbidden        bool
 	ToolForbidden             bool
+	GoDebugForbidden          bool
 }
 
 func main() {
@@ -40,6 +41,7 @@ func main() {
 	flag.BoolVar(&cfg.RetractAllowNoExplanation, "retract-no-explanation", false, "Allow to use retract directives without explanation")
 	flag.BoolVar(&cfg.ToolchainForbidden, "toolchain", false, "Forbid the use of toolchain directive")
 	flag.BoolVar(&cfg.ToolForbidden, "tool", false, "Forbid the use of tool directives")
+	flag.BoolVar(&cfg.GoDebugForbidden, "godebug", false, "Forbid the use of godebug directives")
 
 	help := flag.Bool("h", false, "Show this help.")
 
@@ -51,12 +53,13 @@ func main() {
 	}
 
 	results, err := gomoddirectives.Analyze(gomoddirectives.Options{
-		ExcludeForbidden:          cfg.ExcludeForbidden,
 		ReplaceAllowList:          cfg.ReplaceAllowList,
 		ReplaceAllowLocal:         cfg.ReplaceAllowLocal,
+		ExcludeForbidden:          cfg.ExcludeForbidden,
 		RetractAllowNoExplanation: cfg.RetractAllowNoExplanation,
 		ToolchainForbidden:        cfg.ToolchainForbidden,
 		ToolForbidden:             cfg.ToolForbidden,
+		GoDebugForbidden:          cfg.GoDebugForbidden,
 	})
 	if err != nil {
 		log.Fatal(err)
