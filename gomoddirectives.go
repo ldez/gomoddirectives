@@ -1,4 +1,4 @@
-// Package gomoddirectives a linter that handle `replace`, `retract`, `exclude` directives into `go.mod`.
+// Package gomoddirectives a linter that handle directives into `go.mod`.
 package gomoddirectives
 
 import (

@@ -85,6 +85,8 @@ issues:
         - goconst
         - maintidx
     - path: cmd/gomoddirectives/gomoddirectives.go
+      linters:
+        - forbidigo
       text: 'use of `fmt.Println` forbidden'
 
 output:
