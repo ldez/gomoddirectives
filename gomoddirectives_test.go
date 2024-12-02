@@ -334,6 +334,23 @@ func TestAnalyzeFile(t *testing.T) {
 				GoVersionPattern: regexp.MustCompile(`\d\.\d+(\.0)?`),
 			},
 		},
+		{
+			desc:       "all: empty go.mod",
+			modulePath: "empty/go.mod",
+			opts: Options{
+				ReplaceAllowLocal: true,
+				ReplaceAllowList: []string{
+					"github.com/gorilla/mux",
+					"github.com/ldez/grignotin",
+				},
+				ExcludeForbidden:          true,
+				RetractAllowNoExplanation: false,
+				ToolchainForbidden:        true,
+				ToolForbidden:             true,
+				GoDebugForbidden:          true,
+				GoVersionPattern:          regexp.MustCompile(`\d\.\d+(\.0)?`),
+			},
+		},
 	}
 
 	for _, test := range testCases {
