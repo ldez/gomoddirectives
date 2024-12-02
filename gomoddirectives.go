@@ -113,50 +113,54 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 }
 
 func checkGoVersionDirectives(file *modfile.File, opts Options) []Result {
-	var results []Result
-
-	if file.Go != nil && opts.GoVersionPattern != nil && !opts.GoVersionPattern.MatchString(file.Go.Version) {
-		results = append(results, NewResult(file, file.Go.Syntax, fmt.Sprintf(reasonGoVersion, file.Go.Version, opts.GoVersionPattern.String())))
+	if file == nil || opts.GoVersionPattern == nil || opts.GoVersionPattern.MatchString(file.Go.Version) {
+		return nil
 	}
 
-	return results
+	return []Result{NewResult(file, file.Go.Syntax, fmt.Sprintf(reasonGoVersion, file.Go.Version, opts.GoVersionPattern.String()))}
 }
 
 func checkRetractDirectives(file *modfile.File, opts Options) []Result {
+	if opts.RetractAllowNoExplanation {
+		return nil
+	}
+
 	var results []Result
 
-	if !opts.RetractAllowNoExplanation {
-		for _, r := range file.Retract {
-			if r.Rationale != "" {
-				continue
-			}
-
-			results = append(results, NewResult(file, r.Syntax, reasonRetract))
+	for _, retract := range file.Retract {
+		if retract.Rationale != "" {
+			continue
 		}
+
+		results = append(results, NewResult(file, retract.Syntax, reasonRetract))
 	}
 
 	return results
 }
 
 func checkExcludeDirectives(file *modfile.File, opts Options) []Result {
+	if !opts.ExcludeForbidden {
+		return nil
+	}
+
 	var results []Result
 
-	if opts.ExcludeForbidden {
-		for _, e := range file.Exclude {
-			results = append(results, NewResult(file, e.Syntax, reasonExclude))
-		}
+	for _, exclude := range file.Exclude {
+		results = append(results, NewResult(file, exclude.Syntax, reasonExclude))
 	}
 
 	return results
 }
 
 func checkToolDirectives(file *modfile.File, opts Options) []Result {
+	if !opts.ToolForbidden {
+		return nil
+	}
+
 	var results []Result
 
-	if opts.ToolForbidden {
-		for _, e := range file.Tool {
-			results = append(results, NewResult(file, e.Syntax, reasonTool))
-		}
+	for _, tool := range file.Tool {
+		results = append(results, NewResult(file, tool.Syntax, reasonTool))
 	}
 
 	return results
@@ -167,38 +171,38 @@ func checkReplaceDirectives(file *modfile.File, opts Options) []Result {
 
 	uniqReplace := map[string]struct{}{}
 
-	for _, r := range file.Replace {
-		reason := checkReplaceDirective(opts, r)
+	for _, replace := range file.Replace {
+		reason := checkReplaceDirective(opts, replace)
 		if reason != "" {
-			results = append(results, NewResult(file, r.Syntax, reason))
+			results = append(results, NewResult(file, replace.Syntax, reason))
 			continue
 		}
 
-		if r.Old.Path == r.New.Path && r.Old.Version == r.New.Version {
-			results = append(results, NewResult(file, r.Syntax, reasonReplaceIdentical))
+		if replace.Old.Path == replace.New.Path && replace.Old.Version == replace.New.Version {
+			results = append(results, NewResult(file, replace.Syntax, reasonReplaceIdentical))
 			continue
 		}
 
-		if _, ok := uniqReplace[r.Old.Path+r.Old.Version]; ok {
-			results = append(results, NewResult(file, r.Syntax, reasonReplaceDuplicate))
+		if _, ok := uniqReplace[replace.Old.Path+replace.Old.Version]; ok {
+			results = append(results, NewResult(file, replace.Syntax, reasonReplaceDuplicate))
 		}
 
-		uniqReplace[r.Old.Path+r.Old.Version] = struct{}{}
+		uniqReplace[replace.Old.Path+replace.Old.Version] = struct{}{}
 	}
 
 	return results
 }
 
-func checkReplaceDirective(o Options, r *modfile.Replace) string {
+func checkReplaceDirective(opts Options, r *modfile.Replace) string {
 	if isLocal(r) {
-		if o.ReplaceAllowLocal {
+		if opts.ReplaceAllowLocal {
 			return ""
 		}
 
 		return fmt.Sprintf("%s: %s", reasonReplaceLocal, r.Old.Path)
 	}
 
-	for _, v := range o.ReplaceAllowList {
+	for _, v := range opts.ReplaceAllowList {
 		if r.Old.Path == v {
 			return ""
 		}
@@ -208,22 +212,22 @@ func checkReplaceDirective(o Options, r *modfile.Replace) string {
 }
 
 func checkToolchainDirective(file *modfile.File, opts Options) []Result {
-	var results []Result
-
-	if opts.ToolchainForbidden && file.Toolchain != nil {
-		results = append(results, NewResult(file, file.Toolchain.Syntax, reasonToolchain))
+	if !opts.ToolchainForbidden || file.Toolchain == nil {
+		return nil
 	}
 
-	return results
+	return []Result{NewResult(file, file.Toolchain.Syntax, reasonToolchain)}
 }
 
 func checkGoDebugDirectives(file *modfile.File, opts Options) []Result {
+	if !opts.GoDebugForbidden {
+		return nil
+	}
+
 	var results []Result
 
-	if opts.GoDebugForbidden {
-		for _, e := range file.Godebug {
-			results = append(results, NewResult(file, e.Syntax, reasonGoDebug))
-		}
+	for _, goDebug := range file.Godebug {
+		results = append(results, NewResult(file, goDebug.Syntax, reasonGoDebug))
 	}
 
 	return results
