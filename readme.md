@@ -1,11 +1,80 @@
 # gomoddirectives
 
+A linter that handle directives into `go.mod`.
+
 [![Sponsor](https://img.shields.io/badge/Sponsor%20me-%E2%9D%A4%EF%B8%8F-pink)](https://github.com/sponsors/ldez)
 [![Build Status](https://github.com/ldez/gomoddirectives/workflows/Main/badge.svg?branch=master)](https://github.com/ldez/gomoddirectives/actions)
 
-A linter that handle directives into `go.mod`.
+## Usage
 
-## [`retract`](https://golang.org/ref/mod#go-mod-file-retract) directives
+### Inside golangci-lint
+
+Recommended.
+
+```yml
+linters-settings:
+  gomoddirectives:
+    # Allow local `replace` directives.
+    # Default: false
+    replace-local: true
+    
+    # List of allowed `replace` directives.
+    # Default: []
+    replace-allow-list:
+      - launchpad.net/gocheck
+    # Allow to not explain why the version has been retracted in the `retract` directives.
+    # Default: false
+    retract-allow-no-explanation: true
+    
+    # Forbid the use of the `exclude` directives.
+    # Default: false
+    exclude-forbidden: true
+
+    # Forbid the use of the `toolchain` directive.
+    # Default: false
+    toolchain-forbidden: true
+
+    # Forbid the use of the `tool` directives.
+    # Default: false
+    tool-forbidden: true
+
+    # Forbid the use of the `godebug` directive.
+    # Default: false
+    go-debug-forbidden: true
+
+    # Defines a pattern to validate `go` minimum version directive.
+    # Default: '' (no match)
+    go-version-pattern: '\d\.\d+(\.0)?'
+```
+
+### As a CLI
+
+```
+gomoddirectives [flags]
+
+Flags:
+  -exclude
+        Forbid the use of exclude directives
+  -godebug
+        Forbid the use of godebug directives
+  -goversion string
+        Pattern to validate go min version directive
+  -h    Show this help.
+  -list value
+        List of allowed replace directives
+  -local
+        Allow local replace directives
+  -retract-no-explanation
+        Allow to use retract directives without explanation
+  -tool
+        Forbid the use of tool directives
+  -toolchain
+        Forbid the use of toolchain directive
+```
+
+## Details
+
+### [`retract`](https://golang.org/ref/mod#go-mod-file-retract) directives
 
 - Force explanation for `retract` directives.
 
@@ -23,7 +92,7 @@ retract (
 )
 ```
 
-## [`replace`](https://golang.org/ref/mod#go-mod-file-replace) directives
+### [`replace`](https://golang.org/ref/mod#go-mod-file-replace) directives
 
 - Ban all `replace` directives.
 - Allow only local `replace` directives.
@@ -43,7 +112,7 @@ require (
 replace github.com/ldez/grignotin => ../grignotin/
 ```
 
-## [`exclude`](https://golang.org/ref/mod#go-mod-file-exclude) directives
+### [`exclude`](https://golang.org/ref/mod#go-mod-file-exclude) directives
 
 - Ban all `exclude` directives.
 
@@ -62,7 +131,7 @@ exclude (
 )
 ```
 
-## [`tool`](https://golang.org/ref/mod#go-mod-file-tool) directives
+### [`tool`](https://golang.org/ref/mod#go-mod-file-tool) directives
 
 - Ban all `tool` directives.
 
@@ -77,7 +146,7 @@ tool (
 )
 ```
 
-## [`toolchain`](https://golang.org/ref/mod#go-mod-file-toolchain) directive
+### [`toolchain`](https://golang.org/ref/mod#go-mod-file-toolchain) directive
 
 - Ban `toolchain` directive.
 
@@ -89,7 +158,7 @@ go 1.22
 toolchain go1.23.3
 ```
 
-## [`godebug`](https://go.dev/ref/mod#go-mod-file-godebug) directives
+### [`godebug`](https://go.dev/ref/mod#go-mod-file-godebug) directives
 
 - Ban `godebug` directive.
 
@@ -105,7 +174,7 @@ godebug (
 )
 ```
 
-## [`go`](https://go.dev/ref/mod#go-mod-file-go) directive
+### [`go`](https://go.dev/ref/mod#go-mod-file-go) directive
 
 - Use a regular expression to constraint the Go minimum version.
 
