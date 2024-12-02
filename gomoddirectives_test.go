@@ -327,6 +327,13 @@ func TestAnalyzeFile(t *testing.T) {
 				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 3, Column: 8},
 			}},
 		},
+		{
+			desc:       "goversion: no Go version",
+			modulePath: "empty/go.mod",
+			opts: Options{
+				GoVersionPattern: regexp.MustCompile(`\d\.\d+(\.0)?`),
+			},
+		},
 	}
 
 	for _, test := range testCases {

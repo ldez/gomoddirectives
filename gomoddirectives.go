@@ -113,7 +113,7 @@ func AnalyzeFile(file *modfile.File, opts Options) []Result {
 }
 
 func checkGoVersionDirectives(file *modfile.File, opts Options) []Result {
-	if file == nil || opts.GoVersionPattern == nil || opts.GoVersionPattern.MatchString(file.Go.Version) {
+	if file == nil || file.Go == nil || opts.GoVersionPattern == nil || opts.GoVersionPattern.MatchString(file.Go.Version) {
 		return nil
 	}
 
