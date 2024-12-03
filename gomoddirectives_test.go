@@ -252,25 +252,6 @@ func TestAnalyzeFile(t *testing.T) {
 			},
 		},
 		{
-			desc:       "toolchain: don't allow",
-			modulePath: "toolchain/go.mod",
-			opts: Options{
-				ToolchainForbidden: true,
-			},
-			expected: []Result{{
-				Reason: "toolchain directive is not allowed",
-				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 5, Column: 1},
-				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 5, Column: 19},
-			}},
-		},
-		{
-			desc:       "toolchain: allow",
-			modulePath: "toolchain/go.mod",
-			opts: Options{
-				ToolchainForbidden: false,
-			},
-		},
-		{
 			desc:       "godebug: don't allow",
 			modulePath: "godebug/go.mod",
 			opts: Options{
@@ -319,10 +300,10 @@ func TestAnalyzeFile(t *testing.T) {
 			desc:       "goversion: pattern not matched",
 			modulePath: "goversion_family/go.mod",
 			opts: Options{
-				GoVersionPattern: regexp.MustCompile(`\d\.\d+\.0`),
+				GoVersionPattern: regexp.MustCompile(`\d\.\d+\.0$`),
 			},
 			expected: []Result{{
-				Reason: "go directive (1.22) doesn't match the pattern '\\d\\.\\d+\\.0'",
+				Reason: "go directive (1.22) doesn't match the pattern '\\d\\.\\d+\\.0$'",
 				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 3, Column: 1},
 				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 3, Column: 8},
 			}},
@@ -331,7 +312,53 @@ func TestAnalyzeFile(t *testing.T) {
 			desc:       "goversion: no Go version",
 			modulePath: "empty/go.mod",
 			opts: Options{
-				GoVersionPattern: regexp.MustCompile(`\d\.\d+(\.0)?`),
+				GoVersionPattern: regexp.MustCompile(`\d\.\d+(\.0)?$`),
+			},
+		},
+		{
+			desc:       "toolchain: don't allow",
+			modulePath: "toolchain/go.mod",
+			opts: Options{
+				ToolchainForbidden: true,
+				ToolchainPattern:   regexp.MustCompile(`go\d\.\d+\.\d+$`),
+			},
+			expected: []Result{{
+				Reason: "toolchain directive is not allowed",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 5, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 5, Column: 19},
+			}},
+		},
+		{
+			desc:       "toolchain: allow",
+			modulePath: "toolchain/go.mod",
+			opts: Options{
+				ToolchainForbidden: false,
+			},
+		},
+		{
+			desc:       "toolchain: pattern match",
+			modulePath: "toolchain/go.mod",
+			opts: Options{
+				ToolchainPattern: regexp.MustCompile(`go\d\.\d+\.\d+$`),
+			},
+		},
+		{
+			desc:       "toolchain: pattern not matched",
+			modulePath: "toolchain/go.mod",
+			opts: Options{
+				ToolchainPattern: regexp.MustCompile(`go\d\.22\.\d+$`),
+			},
+			expected: []Result{{
+				Reason: "toolchain directive (go1.23.3) doesn't match the pattern 'go\\d\\.22\\.\\d+$'",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 5, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 5, Column: 19},
+			}},
+		},
+		{
+			desc:       "toolchain: no Go version",
+			modulePath: "empty/go.mod",
+			opts: Options{
+				ToolchainPattern: regexp.MustCompile(`go\d\.22\.\d+$`),
 			},
 		},
 		{
@@ -346,9 +373,10 @@ func TestAnalyzeFile(t *testing.T) {
 				ExcludeForbidden:          true,
 				RetractAllowNoExplanation: false,
 				ToolchainForbidden:        true,
+				ToolchainPattern:          regexp.MustCompile(`go\d\.\d+\.\d+$`),
 				ToolForbidden:             true,
 				GoDebugForbidden:          true,
-				GoVersionPattern:          regexp.MustCompile(`\d\.\d+(\.0)?`),
+				GoVersionPattern:          regexp.MustCompile(`\d\.\d+(\.0)?$`),
 			},
 		},
 	}

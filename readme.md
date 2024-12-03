@@ -34,6 +34,10 @@ linters-settings:
     # Default: false
     toolchain-forbidden: true
 
+    # Defines a pattern to validate `toolchain` directive.
+    # Default: '' (no match)
+    toolchain-pattern: 'go1\.22\.\d+$'
+
     # Forbid the use of the `tool` directives.
     # Default: false
     tool-forbidden: true
@@ -44,7 +48,7 @@ linters-settings:
 
     # Defines a pattern to validate `go` minimum version directive.
     # Default: '' (no match)
-    go-version-pattern: '\d\.\d+(\.0)?'
+    go-version-pattern: '1\.\d+(\.0)?$'
 ```
 
 ### As a CLI
@@ -70,6 +74,8 @@ Flags:
         Forbid the use of tool directives
   -toolchain
         Forbid the use of toolchain directive
+  -toolchain-pattern string
+        Pattern to validate toolchain directive
 ```
 
 ## Details
@@ -149,6 +155,7 @@ tool (
 ### [`toolchain`](https://golang.org/ref/mod#go-mod-file-toolchain) directive
 
 - Ban `toolchain` directive.
+- Use a regular expression to constraint the Go minimum version.
 
 ```go
 module example.com/foo

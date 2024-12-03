@@ -32,6 +32,7 @@ type config struct {
 	ToolForbidden             bool
 	GoDebugForbidden          bool
 	GoVersionPattern          string
+	ToolchainPattern          string
 }
 
 func main() {
@@ -42,6 +43,7 @@ func main() {
 	flag.BoolVar(&cfg.ReplaceAllowLocal, "local", false, "Allow local replace directives")
 	flag.BoolVar(&cfg.RetractAllowNoExplanation, "retract-no-explanation", false, "Allow to use retract directives without explanation")
 	flag.BoolVar(&cfg.ToolchainForbidden, "toolchain", false, "Forbid the use of toolchain directive")
+	flag.StringVar(&cfg.ToolchainPattern, "toolchain-pattern", "", "Pattern to validate toolchain directive")
 	flag.BoolVar(&cfg.ToolForbidden, "tool", false, "Forbid the use of tool directives")
 	flag.BoolVar(&cfg.GoDebugForbidden, "godebug", false, "Forbid the use of godebug directives")
 	flag.StringVar(&cfg.GoVersionPattern, "goversion", "", "Pattern to validate go min version directive")
@@ -68,6 +70,14 @@ func main() {
 	if cfg.GoVersionPattern != "" {
 		var err error
 		opts.GoVersionPattern, err = regexp.Compile(cfg.GoVersionPattern)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if cfg.ToolchainPattern != "" {
+		var err error
+		opts.ToolchainPattern, err = regexp.Compile(cfg.ToolchainPattern)
 		if err != nil {
 			log.Fatal(err)
 		}

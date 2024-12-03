@@ -16,6 +16,7 @@ const (
 	reasonRetract          = "a comment is mandatory to explain why the version has been retracted"
 	reasonExclude          = "exclude directive is not allowed"
 	reasonToolchain        = "toolchain directive is not allowed"
+	reasonToolchainPattern = "toolchain directive (%s) doesn't match the pattern '%s'"
 	reasonTool             = "tool directive is not allowed"
 	reasonGoDebug          = "godebug directive is not allowed"
 	reasonGoVersion        = "go directive (%s) doesn't match the pattern '%s'"
@@ -52,6 +53,7 @@ type Options struct {
 	ExcludeForbidden          bool
 	RetractAllowNoExplanation bool
 	ToolchainForbidden        bool
+	ToolchainPattern          *regexp.Regexp
 	ToolForbidden             bool
 	GoDebugForbidden          bool
 	GoVersionPattern          *regexp.Regexp
@@ -118,6 +120,26 @@ func checkGoVersionDirectives(file *modfile.File, opts Options) []Result {
 	}
 
 	return []Result{NewResult(file, file.Go.Syntax, fmt.Sprintf(reasonGoVersion, file.Go.Version, opts.GoVersionPattern.String()))}
+}
+
+func checkToolchainDirective(file *modfile.File, opts Options) []Result {
+	if file.Toolchain == nil {
+		return nil
+	}
+
+	if opts.ToolchainForbidden {
+		return []Result{NewResult(file, file.Toolchain.Syntax, reasonToolchain)}
+	}
+
+	if opts.ToolchainPattern == nil {
+		return nil
+	}
+
+	if !opts.ToolchainPattern.MatchString(file.Toolchain.Name) {
+		return []Result{NewResult(file, file.Toolchain.Syntax, fmt.Sprintf(reasonToolchainPattern, file.Toolchain.Name, opts.ToolchainPattern.String()))}
+	}
+
+	return nil
 }
 
 func checkRetractDirectives(file *modfile.File, opts Options) []Result {
@@ -209,14 +231,6 @@ func checkReplaceDirective(opts Options, r *modfile.Replace) string {
 	}
 
 	return fmt.Sprintf("%s: %s", reasonReplace, r.Old.Path)
-}
-
-func checkToolchainDirective(file *modfile.File, opts Options) []Result {
-	if !opts.ToolchainForbidden || file.Toolchain == nil {
-		return nil
-	}
-
-	return []Result{NewResult(file, file.Toolchain.Syntax, reasonToolchain)}
 }
 
 func checkGoDebugDirectives(file *modfile.File, opts Options) []Result {
