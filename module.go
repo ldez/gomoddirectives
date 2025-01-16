@@ -1,6 +1,7 @@
 package gomoddirectives
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -11,7 +12,7 @@ import (
 
 // GetModuleFile gets module file.
 func GetModuleFile() (*modfile.File, error) {
-	goMod, err := goenv.GetOne(goenv.GOMOD)
+	goMod, err := goenv.GetOne(context.Background(), goenv.GOMOD)
 	if err != nil {
 		return nil, err
 	}
