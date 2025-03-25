@@ -68,6 +68,7 @@ func AnalyzePass(pass *analysis.Pass, opts Options) ([]Result, error) {
 	}
 
 	goMod := info[0].GoMod
+
 	if pass.Module != nil && pass.Module.Path != "" {
 		for _, m := range info {
 			if m.Path == pass.Module.Path {

@@ -69,6 +69,7 @@ func main() {
 
 	if cfg.GoVersionPattern != "" {
 		var err error
+
 		opts.GoVersionPattern, err = regexp.Compile(cfg.GoVersionPattern)
 		if err != nil {
 			log.Fatal(err)
@@ -77,6 +78,7 @@ func main() {
 
 	if cfg.ToolchainPattern != "" {
 		var err error
+
 		opts.ToolchainPattern, err = regexp.Compile(cfg.ToolchainPattern)
 		if err != nil {
 			log.Fatal(err)
@@ -104,6 +106,7 @@ gomoddirectives [flags]
 
 Flags:
 `)
+
 	flag.PrintDefaults()
 	os.Exit(2)
 }

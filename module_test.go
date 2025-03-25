@@ -11,9 +11,10 @@ import (
 func TestGetModuleFile(t *testing.T) {
 	wd, err := os.Getwd()
 	require.NoError(t, err)
-	defer func() {
+
+	t.Cleanup(func() {
 		_ = os.Chdir(wd)
-	}()
+	})
 
 	err = os.Chdir("./testdata/replace/")
 	require.NoError(t, err)
