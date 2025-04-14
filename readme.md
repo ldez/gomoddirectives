@@ -26,6 +26,7 @@ linters:
       # Default: []
       replace-allow-list:
         - launchpad.net/gocheck
+      
       # Allow to not explain why the version has been retracted in the `retract` directives.
       # Default: false
       retract-allow-no-explanation: true
