@@ -1,0 +1,44 @@
+name: 💡 Feature request
+description: Suggest an idea for this project.
+body:
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Welcome
+      options:
+        - label: Yes, I've searched similar issues on GitHub and didn't find any.
+          required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: How do you use gomoddirectives?
+      options:
+        - I don't know
+        - Through golangci-lint
+        - standalone binary
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Effective version of gomoddirectives
+      description: |-
+        `latest` is not an effective version.
+      render: console
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Detailed Description
+      description: |-
+        The description should explain the use case and its context.
+        The description should avoid providing or focusing on a "solution".
+      placeholder: Description.
+    validations:
+      required: true

@@ -1,0 +1,102 @@
+name: 🐞 Bug Report
+description: Create a report to help us improve.
+labels: [bug]
+body:
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Welcome
+      options:
+        - label: Yes, I've searched similar issues on GitHub and didn't find any.
+          required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: How do you use gomoddirectives?
+      options:
+        - I don't know
+        - Through golangci-lint
+        - standalone binary
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Effective version of gomoddirectives
+      description: |-
+        `latest` is not an effective version.
+      render: console
+    validations:
+      required: true
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Effective version of golangci-lint
+      description: |-
+        `latest` is not an effective version.
+      render: console
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: "How do you trigger this bug? Please walk us through it step by step."
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+        ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to see?
+      placeholder: Description.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: What did you see instead?
+      placeholder: Description.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      value: |-
+        <details>
+
+        ```console
+        # paste output here
+        ```
+
+        </details>
+    validations:
+      required: true
+
+  - type: textarea
+    id: go-env
+    attributes:
+      label: Go environment (if applicable)
+      value: |-
+        <details>
+
+        ```console
+        $ go version && go env
+        # paste output here
+        ```
+
+        </details>
+    validations:
+      required: false
