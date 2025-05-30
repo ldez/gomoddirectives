@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/ldez/grignotin v0.9.0
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/mod v0.24.0
+	golang.org/x/mod v0.25.0
 	golang.org/x/tools v0.32.0
 )
 

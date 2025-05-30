@@ -35,6 +35,10 @@ linters:
       # Default: false
       exclude-forbidden: true
   
+      # Forbid the use of the `ignore` directives.
+      # Default: false
+      exclude-ignore: true
+  
       # Forbid the use of the `toolchain` directive.
       # Default: false
       toolchain-forbidden: true
@@ -69,6 +73,8 @@ Flags:
   -goversion string
         Pattern to validate go min version directive
   -h    Show this help.
+  -ignore
+        Forbid the use of ignore directives
   -list value
         List of allowed replace directives
   -local
@@ -139,6 +145,25 @@ require (
 exclude (
     golang.org/x/crypto v1.4.5
     golang.org/x/text v1.6.7
+)
+```
+
+### [`ignore`](TODO) directives
+
+- Ban all `ignore` directives.
+
+```go
+module example.com/foo
+
+go 1.25
+
+require (
+	github.com/ldez/grignotin v0.4.1
+)
+
+ignore (
+    ./foo/bar/path
+    foo/bar
 )
 ```
 

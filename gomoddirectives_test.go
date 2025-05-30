@@ -210,6 +210,32 @@ func TestAnalyzeFile(t *testing.T) {
 			},
 		},
 		{
+			desc:       "ignore: don't allow",
+			modulePath: "ignore/go.mod",
+			opts: Options{
+				IgnoreForbidden: true,
+			},
+			expected: []Result{
+				{
+					Reason: "ignore directive is not allowed",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 6, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 6, Column: 16},
+				},
+				{
+					Reason: "ignore directive is not allowed",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 7, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 7, Column: 9},
+				},
+			},
+		},
+		{
+			desc:       "ignore: allow",
+			modulePath: "ignore/go.mod",
+			opts: Options{
+				IgnoreForbidden: false,
+			},
+		},
+		{
 			desc:       "tool: don't allow",
 			modulePath: "tool/go.mod",
 			opts: Options{

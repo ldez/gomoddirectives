@@ -27,6 +27,7 @@ type config struct {
 	ReplaceAllowList          flagSlice
 	ReplaceAllowLocal         bool
 	ExcludeForbidden          bool
+	IgnoreForbidden           bool
 	RetractAllowNoExplanation bool
 	ToolchainForbidden        bool
 	ToolForbidden             bool
@@ -39,6 +40,7 @@ func main() {
 	cfg := config{}
 
 	flag.BoolVar(&cfg.ExcludeForbidden, "exclude", false, "Forbid the use of exclude directives")
+	flag.BoolVar(&cfg.IgnoreForbidden, "ignore", false, "Forbid the use of ignore directives")
 	flag.Var(&cfg.ReplaceAllowList, "list", "List of allowed replace directives")
 	flag.BoolVar(&cfg.ReplaceAllowLocal, "local", false, "Allow local replace directives")
 	flag.BoolVar(&cfg.RetractAllowNoExplanation, "retract-no-explanation", false, "Allow to use retract directives without explanation")
