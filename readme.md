@@ -35,7 +35,7 @@ linters:
       # Default: false
       exclude-forbidden: true
   
-      # Forbid the use of the `ignore` directives.
+      # Forbid the use of the `ignore` directives (go >= 1.25).
       # Default: false
       ignore-forbidden: true
   
