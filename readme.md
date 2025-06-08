@@ -37,7 +37,7 @@ linters:
   
       # Forbid the use of the `ignore` directives.
       # Default: false
-      exclude-ignore: true
+      ignore-forbidden: true
   
       # Forbid the use of the `toolchain` directive.
       # Default: false
