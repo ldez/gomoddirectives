@@ -63,6 +63,7 @@ func main() {
 		ReplaceAllowList:          cfg.ReplaceAllowList,
 		ReplaceAllowLocal:         cfg.ReplaceAllowLocal,
 		ExcludeForbidden:          cfg.ExcludeForbidden,
+		IgnoreForbidden:           cfg.IgnoreForbidden,
 		RetractAllowNoExplanation: cfg.RetractAllowNoExplanation,
 		ToolchainForbidden:        cfg.ToolchainForbidden,
 		ToolForbidden:             cfg.ToolForbidden,
