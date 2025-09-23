@@ -15,15 +15,7 @@ import (
 )
 
 func TestAnalyze(t *testing.T) {
-	wd, err := os.Getwd()
-	require.NoError(t, err)
-
-	t.Cleanup(func() {
-		_ = os.Chdir(wd)
-	})
-
-	err = os.Chdir("./testdata/replace/")
-	require.NoError(t, err)
+	t.Chdir("./testdata/replace/")
 
 	results, err := Analyze(Options{})
 	require.NoError(t, err)
