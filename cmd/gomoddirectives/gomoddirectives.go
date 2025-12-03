@@ -53,6 +53,7 @@ func main() {
 	help := flag.Bool("h", false, "Show this help.")
 
 	flag.Usage = usage
+
 	flag.Parse()
 
 	if *help {

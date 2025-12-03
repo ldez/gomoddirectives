@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"go/token"
 	"regexp"
+	"slices"
 	"strings"
 
 	"github.com/ldez/grignotin/gomod"
@@ -243,10 +244,8 @@ func checkReplaceDirective(opts Options, r *modfile.Replace) string {
 		return fmt.Sprintf("%s: %s", reasonReplaceLocal, r.Old.Path)
 	}
 
-	for _, v := range opts.ReplaceAllowList {
-		if r.Old.Path == v {
-			return ""
-		}
+	if slices.Contains(opts.ReplaceAllowList, r.Old.Path) {
+		return ""
 	}
 
 	return fmt.Sprintf("%s: %s", reasonReplace, r.Old.Path)
