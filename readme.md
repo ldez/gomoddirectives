@@ -17,7 +17,7 @@ linters:
     - gomoddirectives
 
   settings:
-    gomoddirectives:
+    gomoddirectives:      
       # Allow local `replace` directives.
       # Default: false
       replace-local: true
@@ -58,6 +58,10 @@ linters:
       # Defines a pattern to validate `go` minimum version directive.
       # Default: '' (no match)
       go-version-pattern: '1\.\d+(\.0)?$'
+
+      # Check the validity of the module path.
+      # Default: false
+      check-module-path: true
 ```
 
 ### As a CLI
@@ -66,6 +70,8 @@ linters:
 gomoddirectives [flags]
 
 Flags:
+  -check-module-path
+        Check module path validity
   -exclude
         Forbid the use of exclude directives
   -godebug
@@ -219,4 +225,14 @@ godebug (
 module example.com/foo
 
 go 1.22.0
+```
+
+### [`module`](https://go.dev/ref/mod#module-path) directive
+
+- Check the validity of the module path.
+
+```go
+module host.tld/path/to/module  // web address for module (sans protocol)
+
+go 1.22
 ```

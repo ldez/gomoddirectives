@@ -381,6 +381,142 @@ func TestAnalyzeFile(t *testing.T) {
 			},
 		},
 		{
+			desc:       "module_path: check disabled",
+			modulePath: "module_path_invalid/go.mod",
+			opts: Options{
+				CheckModulePath: false,
+			},
+		},
+		{
+			desc:       "module_path: invalid path with uppercase",
+			modulePath: "module_path_invalid/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+			expected: []Result{{
+				Reason: "malformed module path \"INVALID-Path\": missing dot in first path element",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 20},
+			}},
+		},
+		{
+			desc:       "module_path: valid path",
+			modulePath: "module_path_valid/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+		},
+		{
+			desc:       "module_path: valid subdomain path",
+			modulePath: "module_path_valid_subdomain/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+		},
+		{
+			desc:       "module_path: missing dot in first element",
+			modulePath: "module_path_no_dot/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+			expected: []Result{{
+				Reason: "malformed module path \"mymodule\": missing dot in first path element",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 16},
+			}},
+		},
+		{
+			desc:       "module_path: uppercase in domain",
+			modulePath: "module_path_uppercase/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+			expected: []Result{{
+				Reason: "malformed module path \"GitHub.com/Example/Project\": invalid char 'G' in first path element",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 34},
+			}},
+		},
+		{
+			desc:       "module_path: leading dash",
+			modulePath: "module_path_leading_dash/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+			expected: []Result{{
+				Reason: "malformed module path \"-example.com/module\": leading dash",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 27},
+			}},
+		},
+		{
+			desc:       "module_path: trailing slash",
+			modulePath: "module_path_trailing_slash/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+			expected: []Result{{
+				Reason: "malformed module path \"example.com/module/\": trailing slash",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 27},
+			}},
+		},
+		{
+			desc:       "module_path: Windows reserved name",
+			modulePath: "module_path_windows_reserved/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+			expected: []Result{{
+				Reason: "malformed module path \"example.com/CON/module\": \"CON\" disallowed as path element component on Windows",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 30},
+			}},
+		},
+		{
+			desc:       "module_path: invalid version suffix",
+			modulePath: "module_path_invalid_version/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+			expected: []Result{{
+				Reason: "malformed module path \"github.com/example/v0\": invalid version",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 29},
+			}},
+		},
+		{
+			desc:       "module_path: leading dot in path element",
+			modulePath: "module_path_leading_dot/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+			expected: []Result{{
+				Reason: "malformed module path \"example.com/.hidden\": leading dot in path element",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 27},
+			}},
+		},
+		{
+			desc:       "module_path: tilde with digits",
+			modulePath: "module_path_tilde_digits/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+			expected: []Result{{
+				Reason: "malformed module path \"example.com/path~1\": trailing tilde and digits in path element",
+				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
+				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 26},
+			}},
+		},
+		{
+			desc:       "module_path: valid gopkg.in path",
+			modulePath: "module_path_gopkg/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+		},
+		{
 			desc:       "all: empty go.mod",
 			modulePath: "empty/go.mod",
 			opts: Options{
