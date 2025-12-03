@@ -381,15 +381,36 @@ func TestAnalyzeFile(t *testing.T) {
 			},
 		},
 		{
-			desc:       "module_path: check disabled",
-			modulePath: "module_path_invalid/go.mod",
+			desc:       "module path: check disabled",
+			modulePath: "module_path/invalid/go.mod",
 			opts: Options{
 				CheckModulePath: false,
 			},
 		},
 		{
-			desc:       "module_path: invalid path with uppercase",
-			modulePath: "module_path_invalid/go.mod",
+			desc:       "module path: valid path",
+			modulePath: "module_path/valid/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+		},
+		{
+			desc:       "module path: valid subdomain path",
+			modulePath: "module_path/valid_subdomain/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+		},
+		{
+			desc:       "module path: valid gopkg.in path",
+			modulePath: "module_path/gopkg/go.mod",
+			opts: Options{
+				CheckModulePath: true,
+			},
+		},
+		{
+			desc:       "module path: invalid path with uppercase",
+			modulePath: "module_path/invalid/go.mod",
 			opts: Options{
 				CheckModulePath: true,
 			},
@@ -400,22 +421,8 @@ func TestAnalyzeFile(t *testing.T) {
 			}},
 		},
 		{
-			desc:       "module_path: valid path",
-			modulePath: "module_path_valid/go.mod",
-			opts: Options{
-				CheckModulePath: true,
-			},
-		},
-		{
-			desc:       "module_path: valid subdomain path",
-			modulePath: "module_path_valid_subdomain/go.mod",
-			opts: Options{
-				CheckModulePath: true,
-			},
-		},
-		{
-			desc:       "module_path: missing dot in first element",
-			modulePath: "module_path_no_dot/go.mod",
+			desc:       "module path: missing dot in first element",
+			modulePath: "module_path/no_dot/go.mod",
 			opts: Options{
 				CheckModulePath: true,
 			},
@@ -426,8 +433,8 @@ func TestAnalyzeFile(t *testing.T) {
 			}},
 		},
 		{
-			desc:       "module_path: uppercase in domain",
-			modulePath: "module_path_uppercase/go.mod",
+			desc:       "module path: uppercase in domain",
+			modulePath: "module_path/uppercase/go.mod",
 			opts: Options{
 				CheckModulePath: true,
 			},
@@ -438,8 +445,8 @@ func TestAnalyzeFile(t *testing.T) {
 			}},
 		},
 		{
-			desc:       "module_path: leading dash",
-			modulePath: "module_path_leading_dash/go.mod",
+			desc:       "module path: leading dash",
+			modulePath: "module_path/leading_dash/go.mod",
 			opts: Options{
 				CheckModulePath: true,
 			},
@@ -450,8 +457,8 @@ func TestAnalyzeFile(t *testing.T) {
 			}},
 		},
 		{
-			desc:       "module_path: trailing slash",
-			modulePath: "module_path_trailing_slash/go.mod",
+			desc:       "module path: trailing slash",
+			modulePath: "module_path/trailing_slash/go.mod",
 			opts: Options{
 				CheckModulePath: true,
 			},
@@ -462,8 +469,8 @@ func TestAnalyzeFile(t *testing.T) {
 			}},
 		},
 		{
-			desc:       "module_path: Windows reserved name",
-			modulePath: "module_path_windows_reserved/go.mod",
+			desc:       "module path: Windows reserved name",
+			modulePath: "module_path/windows_reserved/go.mod",
 			opts: Options{
 				CheckModulePath: true,
 			},
@@ -474,8 +481,8 @@ func TestAnalyzeFile(t *testing.T) {
 			}},
 		},
 		{
-			desc:       "module_path: invalid version suffix",
-			modulePath: "module_path_invalid_version/go.mod",
+			desc:       "module path: invalid version suffix",
+			modulePath: "module_path/invalid_version/go.mod",
 			opts: Options{
 				CheckModulePath: true,
 			},
@@ -486,8 +493,8 @@ func TestAnalyzeFile(t *testing.T) {
 			}},
 		},
 		{
-			desc:       "module_path: leading dot in path element",
-			modulePath: "module_path_leading_dot/go.mod",
+			desc:       "module path: leading dot in path element",
+			modulePath: "module_path/leading_dot/go.mod",
 			opts: Options{
 				CheckModulePath: true,
 			},
@@ -498,8 +505,8 @@ func TestAnalyzeFile(t *testing.T) {
 			}},
 		},
 		{
-			desc:       "module_path: tilde with digits",
-			modulePath: "module_path_tilde_digits/go.mod",
+			desc:       "module path: tilde with digits",
+			modulePath: "module_path/tilde_digits/go.mod",
 			opts: Options{
 				CheckModulePath: true,
 			},
@@ -508,13 +515,6 @@ func TestAnalyzeFile(t *testing.T) {
 				Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 1},
 				End:    token.Position{Filename: "go.mod", Offset: 0, Line: 1, Column: 26},
 			}},
-		},
-		{
-			desc:       "module_path: valid gopkg.in path",
-			modulePath: "module_path_gopkg/go.mod",
-			opts: Options{
-				CheckModulePath: true,
-			},
 		},
 		{
 			desc:       "all: empty go.mod",
