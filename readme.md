@@ -17,7 +17,7 @@ linters:
     - gomoddirectives
 
   settings:
-    gomoddirectives:      
+    gomoddirectives:
       # Allow local `replace` directives.
       # Default: false
       replace-local: true
@@ -227,12 +227,12 @@ module example.com/foo
 go 1.22.0
 ```
 
-### [`module`](https://go.dev/ref/mod#module-path) directive
+### [`module`](https://go.dev/ref/mod#module-path) path
 
 - Check the validity of the module path.
 
 ```go
-module host.tld/path/to/module  // web address for module (sans protocol)
+module example.com/foo
 
 go 1.22
 ```
