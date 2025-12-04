@@ -34,6 +34,7 @@ type config struct {
 	GoDebugForbidden          bool
 	GoVersionPattern          string
 	ToolchainPattern          string
+	CheckModulePath           bool
 }
 
 func main() {
@@ -49,6 +50,7 @@ func main() {
 	flag.BoolVar(&cfg.ToolForbidden, "tool", false, "Forbid the use of tool directives")
 	flag.BoolVar(&cfg.GoDebugForbidden, "godebug", false, "Forbid the use of godebug directives")
 	flag.StringVar(&cfg.GoVersionPattern, "goversion", "", "Pattern to validate go min version directive")
+	flag.BoolVar(&cfg.CheckModulePath, "check-module-path", false, "Check module path validity")
 
 	help := flag.Bool("h", false, "Show this help.")
 
@@ -69,6 +71,7 @@ func main() {
 		ToolchainForbidden:        cfg.ToolchainForbidden,
 		ToolForbidden:             cfg.ToolForbidden,
 		GoDebugForbidden:          cfg.GoDebugForbidden,
+		CheckModulePath:           cfg.CheckModulePath,
 	}
 
 	if cfg.GoVersionPattern != "" {
