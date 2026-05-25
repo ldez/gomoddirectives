@@ -48,6 +48,13 @@ func TestAnalyzeFile(t *testing.T) {
 			},
 		},
 		{
+			desc:       "replace: allow all",
+			modulePath: "replace/go.mod",
+			opts: Options{
+				ReplaceAllowAll: true,
+			},
+		},
+		{
 			desc:       "replace: allow an element",
 			modulePath: "replace/go.mod",
 			opts: Options{
