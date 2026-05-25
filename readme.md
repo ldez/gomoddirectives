@@ -18,10 +18,6 @@ linters:
 
   settings:
     gomoddirectives:
-      # Allow any `replace` directives.
-      # Default: false
-      replace-any: true
-
       # Allow local `replace` directives.
       # Default: false
       replace-local: true
@@ -30,7 +26,11 @@ linters:
       # Default: []
       replace-allow-list:
         - launchpad.net/gocheck
-      
+
+      # Allow all `replace` directives.
+      # Default: false
+      replace-allow-all: true
+
       # Allow to not explain why the version has been retracted in the `retract` directives.
       # Default: false
       retract-allow-no-explanation: true
@@ -89,8 +89,8 @@ Flags:
         List of allowed replace directives
   -local
         Allow local replace directives
-  -replace-any
-        Allow any replace directives
+  -all-replace
+        Allow all replace directives
   -retract-no-explanation
         Allow to use retract directives without explanation
   -tool
@@ -124,9 +124,9 @@ retract (
 ### [`replace`](https://golang.org/ref/mod#go-mod-file-replace) directives
 
 - Ban all `replace` directives.
-- Allow any `replace` directives.
 - Allow only local `replace` directives.
 - Allow only some `replace` directives.
+- Allow all `replace` directives.
 - Detect duplicated `replace` directives.
 - Detect identical `replace` directives.
 

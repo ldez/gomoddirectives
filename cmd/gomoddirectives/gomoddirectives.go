@@ -24,7 +24,7 @@ func (f *flagSlice) Set(s string) error {
 }
 
 type config struct {
-	ReplaceAllowAny           bool
+	ReplaceAllowAll           bool
 	ReplaceAllowList          flagSlice
 	ReplaceAllowLocal         bool
 	ExcludeForbidden          bool
@@ -43,7 +43,7 @@ func main() {
 
 	flag.BoolVar(&cfg.ExcludeForbidden, "exclude", false, "Forbid the use of exclude directives")
 	flag.BoolVar(&cfg.IgnoreForbidden, "ignore", false, "Forbid the use of ignore directives")
-	flag.BoolVar(&cfg.ReplaceAllowAny, "replace-any", false, "Allow any replace directives")
+	flag.BoolVar(&cfg.ReplaceAllowAll, "all-replace", false, "Allow all replace directives")
 	flag.Var(&cfg.ReplaceAllowList, "list", "List of allowed replace directives")
 	flag.BoolVar(&cfg.ReplaceAllowLocal, "local", false, "Allow local replace directives")
 	flag.BoolVar(&cfg.RetractAllowNoExplanation, "retract-no-explanation", false, "Allow to use retract directives without explanation")
@@ -65,7 +65,7 @@ func main() {
 	}
 
 	opts := gomoddirectives.Options{
-		ReplaceAllowAny:           cfg.ReplaceAllowAny,
+		ReplaceAllowAll:           cfg.ReplaceAllowAll,
 		ReplaceAllowList:          cfg.ReplaceAllowList,
 		ReplaceAllowLocal:         cfg.ReplaceAllowLocal,
 		ExcludeForbidden:          cfg.ExcludeForbidden,
