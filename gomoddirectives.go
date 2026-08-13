@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"go/token"
+	"os"
 	"regexp"
 	"slices"
 	"strings"
@@ -16,18 +17,21 @@ import (
 )
 
 const (
-	reasonExclude          = "exclude directive is not allowed"
-	reasonGoDebug          = "godebug directive is not allowed"
-	reasonGoVersion        = "go directive (%s) doesn't match the pattern '%s'"
-	reasonIgnore           = "ignore directive is not allowed"
-	reasonReplace          = "replacement are not allowed"
-	reasonReplaceDuplicate = "multiple replacement of the same module"
-	reasonReplaceIdentical = "the original module and the replacement are identical"
-	reasonReplaceLocal     = "local replacement are not allowed"
-	reasonRetract          = "a comment is mandatory to explain why the version has been retracted"
-	reasonTool             = "tool directive is not allowed"
-	reasonToolchain        = "toolchain directive is not allowed"
-	reasonToolchainPattern = "toolchain directive (%s) doesn't match the pattern '%s'"
+	reasonExclude                     = "exclude directive is not allowed"
+	reasonGoDebug                     = "godebug directive is not allowed"
+	reasonGoVersion                   = "go directive (%s) doesn't match the pattern '%s'"
+	reasonIgnore                      = "ignore directive is not allowed"
+	reasonIgnoredByDefaultHiddenDirs  = "files/directories starting with '.' and '_' are ignored by default"
+	reasonIgnoredByDefaultVendorDir   = "the vendor directory is ignored by default"
+	reasonIgnoredByDefaultTestdataDir = "directories named 'testdata' are ignored by default"
+	reasonReplace                     = "replacement are not allowed"
+	reasonReplaceDuplicate            = "multiple replacement of the same module"
+	reasonReplaceIdentical            = "the original module and the replacement are identical"
+	reasonReplaceLocal                = "local replacement are not allowed"
+	reasonRetract                     = "a comment is mandatory to explain why the version has been retracted"
+	reasonTool                        = "tool directive is not allowed"
+	reasonToolchain                   = "toolchain directive is not allowed"
+	reasonToolchainPattern            = "toolchain directive (%s) doesn't match the pattern '%s'"
 )
 
 // Result the analysis result.
@@ -199,7 +203,37 @@ func checkExcludeDirectives(file *modfile.File, opts Options) []Result {
 
 func checkIgnoreDirectives(file *modfile.File, opts Options) []Result {
 	if !opts.IgnoreForbidden {
-		return nil
+		var results []Result
+
+		for _, exclude := range file.Ignore {
+			//nolint:gocritic // if using filepath.Join the localdir (./) prefix is lost
+			if exclude.Path == "."+string(os.PathSeparator)+"vendor" {
+				results = append(results, NewResult(file, exclude.Syntax, reasonIgnoredByDefaultVendorDir))
+
+				continue
+			}
+
+			for pathElement := range strings.SplitSeq(exclude.Path, string(os.PathSeparator)) {
+				if pathElement == "." {
+					// discard any local path prefix (./ on Linux/Mac or .\ on Windows)
+					continue
+				}
+
+				if strings.HasPrefix(pathElement, ".") || strings.HasPrefix(pathElement, "_") {
+					results = append(results, NewResult(file, exclude.Syntax, reasonIgnoredByDefaultHiddenDirs))
+
+					break
+				}
+
+				if pathElement == "testdata" {
+					results = append(results, NewResult(file, exclude.Syntax, reasonIgnoredByDefaultTestdataDir))
+
+					break
+				}
+			}
+		}
+
+		return results
 	}
 
 	var results []Result

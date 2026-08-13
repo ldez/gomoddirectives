@@ -235,6 +235,35 @@ func TestAnalyzeFile(t *testing.T) {
 			},
 		},
 		{
+			desc:       "ignore: flag default ignore files and directories",
+			modulePath: "ignore_defaults/go.mod",
+			opts: Options{
+				IgnoreForbidden: false,
+			},
+			expected: []Result{
+				{
+					Reason: "files/directories starting with '.' and '_' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 6, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 6, Column: 8},
+				},
+				{
+					Reason: "files/directories starting with '.' and '_' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 7, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 7, Column: 9},
+				},
+				{
+					Reason: "the vendor directory is ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 8, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 8, Column: 10},
+				},
+				{
+					Reason: "directories named 'testdata' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 9, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 9, Column: 17},
+				},
+			},
+		},
+		{
 			desc:       "tool: don't allow",
 			modulePath: "tool/go.mod",
 			opts: Options{
