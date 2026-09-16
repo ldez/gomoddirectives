@@ -235,6 +235,65 @@ func TestAnalyzeFile(t *testing.T) {
 			},
 		},
 		{
+			desc:       "ignore: flag default ignore files and directories",
+			modulePath: "ignore_defaults/go.mod",
+			opts: Options{
+				IgnoreForbidden: false,
+			},
+			expected: []Result{
+				{
+					Reason: "files/directories starting with '.' and '_' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 6, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 6, Column: 6},
+				},
+				{
+					Reason: "files/directories starting with '.' and '_' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 7, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 7, Column: 7},
+				},
+				{
+					Reason: "directories named 'vendor' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 8, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 8, Column: 8},
+				},
+				{
+					Reason: "directories named 'testdata' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 9, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 9, Column: 15},
+				},
+				{
+					Reason: "directories named 'vendor' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 10, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 10, Column: 13},
+				},
+				{
+					Reason: "files/directories starting with '.' and '_' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 14, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 14, Column: 8},
+				},
+				{
+					Reason: "files/directories starting with '.' and '_' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 15, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 15, Column: 9},
+				},
+				{
+					Reason: "directories named 'vendor' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 16, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 16, Column: 10},
+				},
+				{
+					Reason: "directories named 'testdata' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 17, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 17, Column: 17},
+				},
+				{
+					Reason: "directories named 'vendor' are ignored by default",
+					Start:  token.Position{Filename: "go.mod", Offset: 0, Line: 18, Column: 2},
+					End:    token.Position{Filename: "go.mod", Offset: 0, Line: 18, Column: 15},
+				},
+			},
+		},
+		{
 			desc:       "tool: don't allow",
 			modulePath: "tool/go.mod",
 			opts: Options{
